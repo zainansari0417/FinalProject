@@ -1,6 +1,8 @@
 package sample;
 
+import com.sun.javafx.tk.Toolkit;
 import javafx.application.Application;
+import javafx.concurrent.Task;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -12,6 +14,13 @@ import javafx.scene.paint.*;
 import javafx.scene.canvas.*;
 import javafx.scene.control.Label;
 import javafx.scene.shape.ArcType;
+import javafx.animation.*;
+import javafx.util.Duration;
+import java.util.concurrent.*;
+import java.io.*;
+import java.net.*;
+
+import java.util.concurrent.TimeUnit;
 
 import java.net.*;
 import java.io.*;
@@ -19,8 +28,26 @@ import java.io.*;
 public class Client extends Application {
     private Socket socket;
     private DataOutputStream out;
+    Runnable Task = new Task<Object>() {
+        @Override
+        protected Object call() throws Exception {
+            return null;
+        }
+    };
 
-    public void start(Stage primaryStage) {
+    int square = 75;
+    int checkers[][]={
+            {0,1,0,1,0,1,0,1},
+            {1,0,1,0,1,0,1,0},
+            {0,1,0,1,0,1,0,1},
+            {0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0},
+            {2,0,2,0,2,0,2,0},
+            {0,2,0,2,0,2,0,2},
+            {2,0,2,0,2,0,2,0}
+    };
+
+    public void start(Stage primaryStage) throws InterruptedException {
         Group root = new Group();
         Canvas canvas = new Canvas();
         canvas.setWidth(800);
@@ -35,15 +62,45 @@ public class Client extends Application {
             e.printStackTrace();
         }
 
-        draw(canvas, root);
+        draw(canvas, root, square, checkers);
+        drawPieces(canvas, root, square, checkers);
 
         root.getChildren().add(canvas);
         primaryStage.setTitle("Client");
         primaryStage.setScene(new Scene(root, 800, 600));
         primaryStage.show();
+
+        checkers[2][1] = 0;
+        checkers[3][2] = 1;
+        //updatePieces(canvas, root);
     }
 
-    public void draw(Canvas canvas, Group root){
+    public void updatePieces(Canvas canvas, Group root) throws InterruptedException {
+        drawPieces(canvas, root, square, checkers);
+    }
+
+
+    public void drawPieces(Canvas canvas, Group root, int square, int[][] checkers){
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+
+        for(int row=0; row<8; row++){
+            for(int col=0; col<8; col++){
+                if(checkers[col][row] > 0){
+                    if(checkers[col][row] == 1){
+                        gc.setFill(Color.RED);
+                        gc.setStroke(Color.GRAY);
+                    }else if (checkers[col][row] == 2){
+                        gc.setFill(Color.WHITESMOKE);
+                        gc.setStroke(Color.GRAY);
+                    }
+                    gc.strokeOval(2+square*row,2+square*col, 71,71);
+                    gc.fillOval(2+square*row,2+square*col, 71,71);
+                }
+            }
+        }
+    }
+
+    public void draw(Canvas canvas, Group root, int square, int[][] checkers){
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
         gc.setFill(Color.BLACK);
@@ -54,30 +111,18 @@ public class Client extends Application {
 
         gc.setFill(Color.GRAY);
 
-        for(int i=0; i<8; i++){
-            for(int j=0; j<8; j++){
-                if(i % 2 == 0 && j % 2 == 0){
-                    gc.fillRect(0+75*i,0+75*j, 75,75);
+        for(int row=0; row<8; row++){
+            for(int col=0; col<8; col++){
+                if(row % 2 == 0 && col % 2 == 0){
+                    gc.fillRect(0+square*row,0+square*col, square,square);
                 }
             }
         }
 
-        for(int i=0; i<8; i++){
-            for(int j=0; j<8; j++){
-                if(i % 2 == 0 && j % 2 == 0){
-                    gc.fillRect(75+75*i,75+75*j, 75,75);
-                }
-            }
-        }
-
-        gc.setFill(Color.RED);
-        gc.setStroke(Color.GRAY);
-
-        for(int i=0; i<8; i++){
-            for(int j=0; j<4; j++){
-                if(i % 2 == 0 && j % 2 == 0){
-                    gc.strokeOval(77+75*i,2+75*j, 71,71);
-                    gc.fillOval(77+75*i,2+75*j, 71,71);
+        for(int row=0; row<8; row++){
+            for(int col=0; col<8; col++){
+                if(row % 2 == 0 && col % 2 == 0){
+                    gc.fillRect(square+square*row,square+square*col, square,square);
                 }
             }
         }
