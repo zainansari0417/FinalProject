@@ -1,5 +1,9 @@
 # FinalProject
 
+Randy, I just wanted to let you know that for some reason, we couldn't commit using the command line like we were doing this whole year. So we panicked and tried all we could. Pulling, refreshing, nothing helped. So as the last straw we used the upload files button on the website. That's why you'll probably notice the commits are recent, since this is our fifth or sixth attempt at a normal command line committed repository. Also, near the end, we both met up and did the final commit, but since we weren't that confident committing the normal way anyway, we decided to commit from Ammar's account. It's totally up to you as how you mark our participation, but if my words mean anything, I'd like to say we both did relatively the same amount of work. Rest is up to you sir. Now onto the rules...
+
+
+--Rules--
 This is a game of Foxes and Hounds
 
 Hounds are placed onto fields b8, d8, f8, and h8. Fox starts set onto e1. Fox moves first.
